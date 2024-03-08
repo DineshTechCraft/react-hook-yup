@@ -1,12 +1,12 @@
 import "./App.css";
-import Form from "./components/form";
+import Formyup from "./components/form";
 
 function App() {
   return (
-    <div className="App">
+    <div className="App bg-success">
       <div className="container">
         <div className="card">
-          <Form />
+          <Formyup />
         </div>
       </div>
     </div>
