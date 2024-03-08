@@ -8,15 +8,20 @@ const schema = yup.object().shape({
   email: yup.string().required().email(),
   name: yup.string().required(),
   phone: yup
+  .string()
+  .required('Mobile number is required')
+  .matches(
+    /^[0-9]{10}$/,
+    'Mobile number must be 10 digits and contain only numbers'
+  ),
+  password: yup
     .string()
-    .min(10)
-    .max(10)
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters")
     .matches(
-      /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
-      "Enter a valid phone number"
-    )
-    .required(),
-  password: yup.string().min(8).max(15).required(),
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    ),
   confirm_password: yup
     .string()
     .label("confirm password")
@@ -34,8 +39,8 @@ const Form = () => {
     resolver: yupResolver(schema),
   });
 
-  const onsubmitHandle = async(data) => {
-    console.log("Form Data:",data);
+  const onsubmitHandle = async (data) => {
+    console.log("Form Data:", data);
     try {
       await axios.post("http://localhost:5000/api/register", data);
       console.log("User registered successfully");
@@ -49,10 +54,9 @@ const Form = () => {
     <div className="min-vh-100 d-flex justify-content-center align-items-center bg-success">
       <div className="bg-white p-3 rounded w-25">
         <h2 className="mb-4 text-center">Sign Up</h2>
-      
+
         <form onSubmit={handleSubmit(onsubmitHandle)}>
           <div className="mb-3">
-            
             <input
               {...register("name")}
               className="form-control"
@@ -62,7 +66,6 @@ const Form = () => {
             <p className="text-danger">{errors.name?.message}</p>
           </div>
           <div className="mb-3">
-            
             <input
               {...register("phone")}
               className="form-control"
@@ -72,7 +75,6 @@ const Form = () => {
             <p className="text-danger">{errors.phone?.message}</p>
           </div>
           <div className="mb-3">
-            
             <input
               {...register("email")}
               className="form-control"
@@ -83,7 +85,6 @@ const Form = () => {
             <p className="text-danger">{errors.email?.message}</p>
           </div>
           <div className="mb-3">
-            
             <input
               {...register("password")}
               className="form-control"
@@ -94,7 +95,6 @@ const Form = () => {
             <p className="text-danger">{errors.password?.message}</p>
           </div>
           <div className="mb-3">
-            
             <input
               {...register("confirm_password")}
               className="form-control"
@@ -109,9 +109,8 @@ const Form = () => {
             Register
           </button>
         </form>
-        </div>
       </div>
-    
+    </div>
   );
 };
 
